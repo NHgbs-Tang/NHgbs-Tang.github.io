@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>私人网盘（维护）</title>
+    <style>
+        /* 添加样式 */
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>私人网盘</h1>
+        <p>警告：维护中，所有数据不会上传、展示！</p>
+        <div id="space-info"></div>
+        
+        <form id="uploadForm">
+            <input type="file" name="file" required>
+            <button type="submit">上传文件</button>
+        </form>
+
+        <div id="file-list">
+            <!-- 文件列表动态加载 -->
+        </div>
+    </div>
+
+    <script>
+        // 空间使用统计
+        function updateSpace() {
+            fetch('/space').then(r => r.json()).then(data => {
+                document.getElementById('space-info').innerHTML = `
+                    已使用 ${data.used}MB / 总空间 ${data.total}MB
+                    （使用率 ${data.percentage}%）
+                `;
+            });
+        }
+
+        // 文件上传
+        document.getElementById('uploadForm').addEventListener('submit', e => {
+            e.preventDefault();
+            const formData = new FormData();
+            formData.append('file', e.target.file.files[0]);
+            
+            fetch('/upload', {
+                method: 'POST',
+                body: formData
+            }).then(() => {
+                alert('上传成功！');
+                updateSpace();
+            });
+        });
+
+        // 初始化加载
+        updateSpace();
+    </script>
+</body>
+</html>
