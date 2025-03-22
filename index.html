@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>NHgbs主页</title>
+    <style>
+        .container { max-width: 800px; margin: 0 auto; padding: 20px; }
+        .server-card, .netdisk-card { 
+            border: 1px solid #ddd; padding: 20px; margin: 10px; 
+            border-radius: 8px; cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>欢迎来到NHgbs的主页</h1>
+
+        
+        <div class="server-card" onclick="location.href='/servers.html'">
+            <h2>我的世界服务器</h2>
+            <p>点击查看详情</p>
+        </div>
+
+        <div class="netdisk-card" onclick="location.href='/netdisk.html'">
+            <h2>私人网盘（维护）</h2>
+            <p>总空间：512MB</p>
+        </div>
+        <div class="server-card" onclick="location.href='/docs/docentre.html'">
+            <h2>文档中心</h2>
+            <p>写一些你所想写的文档</p>
+        </div>
+
+        <div class="server-card" onclick="location.href='/egg.html'">
+            <h2>更多功能，敬请期待</h2>
+            <p>未开发--房地产预留地</p>
+        </div>
+        <h2>贡献：老唐 老姜</h1>
+    </div>
+</body>
+</html>
