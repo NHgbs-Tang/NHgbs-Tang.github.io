@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>打印店官网</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" rel="stylesheet">
+</head>
+
+<body class="bg-gray-100">
+    <!-- 导航栏 -->
+    <nav class="bg-blue-600 p-4 text-white">
+        <div class="container mx-auto flex justify-between items-center">
+            <h1 class="text-2xl">打印店官网</h1>
+        </div>
+    </nav>
+
+    <!-- 主体内容 -->
+    <div class="container mx-auto p-8">
+        <!-- 文件上传部分 -->
+        <div class="bg-white p-6 rounded shadow-md mb-8">
+            <h2 class="text-xl font-bold mb-4">上传文件</h2>
+            <form id="uploadForm" enctype="multipart/form-data">
+                <input type="file" name="file" class="border p-2 w-full mb-4">
+                <button type="submit"
+                    class="bg-blue-600 text-white p-2 rounded hover:bg-blue-700">上传</button>
+            </form>
+        </div>
+
+        <!-- 文件列表部分 -->
+        <div class="bg-white p-6 rounded shadow-md">
+            <h2 class="text-xl font-bold mb-4">文件列表</h2>
+            <ul id="fileList"></ul>
+        </div>
+    </div>
+
+    <script>
+        const uploadForm = document.getElementById('uploadForm');
+        const fileList = document.getElementById('fileList');
+
+        // 上传文件
+        uploadForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(uploadForm);
+            try {
+                const response = await fetch('/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+                if (response.ok) {
+                    alert('文件上传成功');
+                    loadFiles();
+                } else {
+                    alert('文件上传失败');
+                }
+            } catch (error) {
+                console.error('上传出错:', error);
+            }
+        });
+
+        // 加载文件列表
+        async function loadFiles() {
+            try {
+                const response = await fetch('/files');
+                const files = await response.json();
+                fileList.innerHTML = '';
+                files.forEach(file => {
+                    const li = document.createElement('li');
+                    li.classList.add('flex', 'items-center', 'justify-between', 'border-b', 'py-2');
+                    const fileName = document.createElement('span');
+                    fileName.textContent = file.filename;
+                    const downloadLink = document.createElement('a');
+                    downloadLink.href = `/download/${file.filename}`;
+                    downloadLink.textContent = '下载';
+                    downloadLink.classList.add('text-blue-600', 'mr-2');
+                    const deleteButton = document.createElement('button');
+                    deleteButton.textContent = '删除';
+                    deleteButton.classList.add('text-red-600');
+                    deleteButton.addEventListener('click', async () => {
+                        try {
+                            const response = await fetch(`/delete/${file.filename}`, {
+                                method: 'DELETE'
+                            });
+                            if (response.ok) {
+                                alert('文件删除成功');
+                                loadFiles();
+                            } else {
+                                alert('文件删除失败');
+                            }
+                        } catch (error) {
+                            console.error('删除出错:', error);
+                        }
+                    });
+                    li.appendChild(fileName);
+                    const actions = document.createElement('div');
+                    actions.appendChild(downloadLink);
+                    actions.appendChild(deleteButton);
+                    li.appendChild(actions);
+                    fileList.appendChild(li);
+                });
+            } catch (error) {
+                console.error('加载文件列表出错:', error);
+            }
+        }
+
+        // 初始加载文件列表
+        loadFiles();
+    </script>
+</body>
+
+</html>
+    
